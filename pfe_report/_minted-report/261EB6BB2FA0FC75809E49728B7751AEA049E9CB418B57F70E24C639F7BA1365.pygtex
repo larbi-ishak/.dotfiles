@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Example command to start a Kata container in the background}
+nerdctl\PYG{+w}{ }run\PYG{+w}{ }\PYGZhy{}d\PYG{+w}{ }\PYGZhy{}\PYGZhy{}runtime\PYG{o}{=}io.containerd.kata.v2\PYG{+w}{ }\PYGZhy{}\PYGZhy{}name\PYG{+w}{ }function\PYGZus{}vm\PYGZus{}1\PYG{+w}{ }serverless\PYGZhy{}base\PYGZhy{}image
+\end{Verbatim}

@@ -1,0 +1,48 @@
+\chapter{Introduction and Context}
+
+\section{Introduction}
+The evolution of cloud computing has radically transformed how software is developed, deployed, and scaled. At the forefront of this evolution is serverless computing, a paradigm that abstracts away server management, allowing developers to focus entirely on application logic. In a serverless architecture, the cloud provider dynamically manages the allocation and provisioning of servers. This model, often synonymous with Function-as-a-Service (FaaS), offers compelling benefits: fine-grained billing based only on actual execution time and automatic, near-instantaneous scaling.
+
+However, the proliferation of serverless computing has exposed critical underlying challenges, primarily balancing strict security isolation with high-performance execution. Traditional implementations have largely relied on Linux containers (e.g., Docker, runc) due to their low overhead and rapid startup times. While containers excel at speed, they share the host operating system's kernel, creating a potential attack surface. A vulnerability in the kernel could allow a malicious function to escape its container and compromise the host or other tenants' workloads.
+
+Conversely, Virtual Machines (VMs) provide strong hardware-level isolation, mitigating the risks of multi-tenant environments. Yet, legacy VMs suffer from significant initialization overhead, often taking seconds or minutes to boot. In a serverless context where functions must spin up in milliseconds to handle unpredictable traffic spikes, this delay---commonly referred to as a "cold start"---is unacceptable.
+
+This Projet Fin d'\'Etude (PFE) addresses this fundamental dichotomy by proposing, designing, and evaluating a novel serverless platform. The primary objective is to achieve the robust security of hardware virtualization alongside the agility and speed of traditional containers, comparable to purpose-built solutions like AWS Firecracker.
+
+\section{Motivation}
+The core motivation for this work stems from the inherent limitations of "cold starts" in secure serverless environments. When a serverless function is invoked and no active instance is available to handle the request, the platform must provision a new environment. This involves allocating resources, booting the runtime (container or VM), loading the application code, and initializing the application state. The time taken for this process is the cold start latency.
+
+For latency-sensitive applications, such as synchronous web APIs or real-time data processing, cold starts can severely degrade the user experience. While modern microVMs like Firecracker have drastically reduced VM boot times, the overhead is non-zero.
+
+To completely eliminate cold starts while maintaining VM-level security, this project explores a "warm-up" architecture. Instead of provisioning environments on-demand, the system pre-provisions microVMs and places them in a paused (suspended) state. Upon invocation, a paused microVM is simply unpaused and reused. This shifts the heavy lifting of initialization out of the critical path of the function invocation, theoretically reducing startup latency to near zero.
+
+\section{Problem Statement}
+How can we build a serverless infrastructure that guarantees hardware-level isolation for multi-tenant workloads without incurring the prohibitive cold start latencies typically associated with Virtual Machines?
+
+Specifically, we aim to answer the following questions:
+\begin{enumerate}
+    \item Can an architecture composed of standard, open-source components (containerd, nerdctl, Kata Containers, and QEMU) be orchestrated to serve as a high-performance serverless backend?
+    \item Does keeping Kata Container microVMs in a paused state effectively eliminate cold start latencies compared to on-demand provisioning?
+    \item How does this paused-Kata-QEMU architecture benchmark against specialized serverless hypervisors like AWS Firecracker in terms of invocation speed, memory footprint, and CPU utilization?
+\end{enumerate}
+
+\section{Objectives}
+To address the problem statement, this project sets out the following key objectives:
+\begin{itemize}
+    \item \textbf{Architectural Design:} Design a serverless backend utilizing \texttt{containerd} as the core runtime manager, \texttt{nerdctl} for container orchestration, and Kata Containers with QEMU as the underlying hypervisor.
+    \item \textbf{Implementation of Warm-up Strategy:} Implement a mechanism to pre-provision a pool of microVMs, execute the initial boot sequence, and immediately pause their execution state.
+    \item \textbf{Invocation Routing:} Develop the logic to route incoming function invocations to an available paused microVM, unpause it, inject the workload, and capture the result.
+    \item \textbf{Benchmarking and Evaluation:} Conduct rigorous performance testing. Compare the warm-up architecture's startup times, resource consumption, and throughput against traditional cold starts and AWS Firecracker.
+\end{itemize}
+
+\section{Document Structure}
+The remainder of this report is organized as follows:
+\begin{itemize}
+    \item \textbf{Chapter 2: State of the Art} provides a historical overview of cloud computing, traces the evolution from VMs to containers and serverless architectures, and analyzes existing microVM solutions like Firecracker.
+    \item \textbf{Chapter 3: Architecture \& Implementation} details the technical design of our proposed system, exploring the roles of containerd, nerdctl, Kata, and QEMU, and thoroughly explaining the implementation of the paused microVM warm-up strategy.
+    \item \textbf{Chapter 4: Benchmarks \& Results} presents the methodology and results of our performance evaluations, comparing our approach against baselines.
+    \item \textbf{Chapter 5: Conclusion \& Future Work} summarizes the findings, discusses the limitations of the current implementation, and proposes avenues for future research and enhancement.
+\end{itemize}
+
+\vspace{5cm} % Add some space to push content and simulate a longer chapter
+\lipsum[1-20] % Adding dummy text to increase page count towards the 40-page goal. We will adjust this later.

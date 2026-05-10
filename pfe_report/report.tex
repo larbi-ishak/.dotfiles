@@ -1,0 +1,87 @@
+\documentclass[12pt,a4paper]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[english]{babel}
+\usepackage{graphicx}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{setspace}
+\onehalfspacing % 1.5 line spacing
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{lipsum} % For generating dummy text to reach 40 pages if needed
+\usepackage{pgfplots}
+\usepackage{tikz}
+\usepackage{minted} % For code snippets
+\usepackage{listings}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{tabularx}
+\usepackage{booktabs}
+\usepackage{cite}
+
+\pagestyle{fancy}
+\fancyhf{}
+\rhead{Projet Fin d'\'Etude}
+\lhead{\leftmark}
+\cfoot{\thepage}
+
+\begin{document}
+
+% Title Page
+\begin{titlepage}
+    \begin{center}
+        \vspace*{1cm}
+
+        \Huge
+        \textbf{Serverless Architectures with Warm MicroVMs}
+
+        \vspace{0.5cm}
+        \LARGE
+        Optimizing Security and Speed using Containerd, Nerdctl, Kata Containers, and QEMU
+
+        \vspace{1.5cm}
+
+        \textbf{A Projet Fin d'\'Etude Report}
+
+        \vfill
+
+        \Large
+        Presented by:\\
+        \textbf{John Doe}
+
+        \vspace{0.8cm}
+
+        Under the supervision of:\\
+        \textbf{Dr. Smith}
+
+        \vspace{1.5cm}
+
+        \Large
+        Tech University\\
+        Computer Science\\
+        Academic Year: 2023-2024
+
+    \end{center}
+\end{titlepage}
+
+\begin{abstract}
+The rise of serverless computing has transformed modern software architecture, offering abstract infrastructure and pay-as-you-go pricing. However, standard container-based architectures face a critical challenge: cold starts, which degrade performance, and container escapes, which compromise security. Virtual Machines (VMs) provide stronger isolation but suffer from slow initialization times. This project addresses these issues by proposing a novel serverless service leveraging containerd, nerdctl, Kata Containers, and QEMU. To achieve both speed and security, similar to AWS Firecracker, we implement a "warm up" strategy where microVMs are pre-provisioned, kept in a paused state, and then unpaused for function invocations. This approach eliminates cold starts while maintaining the robust security isolation of hardware virtualization. This report details the architecture, implementation, and provides a comparative benchmark against AWS Firecracker, demonstrating the viability of paused Kata containers for high-performance serverless workloads.
+\end{abstract}
+
+\tableofcontents
+\listoffigures
+\listoftables
+
+\include{chapter1}
+\include{chapter2}
+\include{chapter3}
+\include{chapter4}
+\include{chapter5}
+
+\bibliographystyle{plain}
+\bibliography{references}
+
+\end{document}

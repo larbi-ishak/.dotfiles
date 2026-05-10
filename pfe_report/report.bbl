@@ -1,0 +1,23 @@
+\begin{thebibliography}{1}
+
+\bibitem{agache2020firecracker}
+Alexandru Agache, Marc Brooker, Alexandra Iordache, Anthony Liguori, Rolf
+  Neugebauer, Phil Piwonka, and Diana-Maria Popa.
+\newblock Firecracker: Lightweight virtualization for serverless applications.
+\newblock In {\em 17th USENIX Symposium on Networked Systems Design and
+  Implementation (NSDI 20)}, pages 419--434, 2020.
+
+\bibitem{jonas2019cloud}
+Eric Jonas, Johann Schleier-Smith, Vikram Sreekanti, Chia-Che Tsai, Anurag
+  Khandelwal, Qifan Pu, Vaishaal Shankar, Joao Carreira, Karl Krauth, Neeraja
+  Yadwadkar, et~al.
+\newblock Cloud programming simplified: A berkeley view on serverless
+  computing.
+\newblock {\em arXiv preprint arXiv:1902.03383}, 2019.
+
+\bibitem{kata2023}
+{Kata Containers Project}.
+\newblock Kata containers: The speed of containers, the security of vms.
+\newblock \url{https://katacontainers.io/}, 2023.
+
+\end{thebibliography}
