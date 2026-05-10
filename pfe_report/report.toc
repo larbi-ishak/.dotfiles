@@ -1,0 +1,35 @@
+\babel@toc {english}{}\relax
+\contentsline {chapter}{\numberline {1}Introduction and Context}{5}{chapter.1}%
+\contentsline {section}{\numberline {1.1}Introduction}{5}{section.1.1}%
+\contentsline {section}{\numberline {1.2}Motivation}{6}{section.1.2}%
+\contentsline {section}{\numberline {1.3}Problem Statement}{6}{section.1.3}%
+\contentsline {section}{\numberline {1.4}Objectives}{6}{section.1.4}%
+\contentsline {section}{\numberline {1.5}Document Structure}{7}{section.1.5}%
+\contentsline {chapter}{\numberline {2}State of the Art}{12}{chapter.2}%
+\contentsline {section}{\numberline {2.1}Evolution of Cloud Architectures}{12}{section.2.1}%
+\contentsline {subsection}{\numberline {2.1.1}Hardware Virtualization}{12}{subsection.2.1.1}%
+\contentsline {subsection}{\numberline {2.1.2}Containerization}{12}{subsection.2.1.2}%
+\contentsline {subsection}{\numberline {2.1.3}Serverless and FaaS}{13}{subsection.2.1.3}%
+\contentsline {section}{\numberline {2.2}The Security vs. Speed Dilemma}{13}{section.2.2}%
+\contentsline {section}{\numberline {2.3}MicroVMs: Bridging the Gap}{13}{section.2.3}%
+\contentsline {subsection}{\numberline {2.3.1}AWS Firecracker}{13}{subsection.2.3.1}%
+\contentsline {subsection}{\numberline {2.3.2}Kata Containers}{14}{subsection.2.3.2}%
+\contentsline {section}{\numberline {2.4}Addressing Cold Starts in MicroVMs}{14}{section.2.4}%
+\contentsline {chapter}{\numberline {3}Architecture and Implementation}{19}{chapter.3}%
+\contentsline {section}{\numberline {3.1}System Architecture Overview}{19}{section.3.1}%
+\contentsline {section}{\numberline {3.2}Component Roles}{20}{section.3.2}%
+\contentsline {subsection}{\numberline {3.2.1}Containerd and Nerdctl}{20}{subsection.3.2.1}%
+\contentsline {subsection}{\numberline {3.2.2}Kata Containers and QEMU}{20}{subsection.3.2.2}%
+\contentsline {section}{\numberline {3.3}Implementing the Warm-Up Strategy}{20}{section.3.3}%
+\contentsline {subsection}{\numberline {3.3.1}Pre-Provisioning}{20}{subsection.3.3.1}%
+\contentsline {subsection}{\numberline {3.3.2}Pausing State}{21}{subsection.3.3.2}%
+\contentsline {subsection}{\numberline {3.3.3}Invocation and Unpausing}{21}{subsection.3.3.3}%
+\contentsline {section}{\numberline {3.4}Security Considerations}{21}{section.3.4}%
+\contentsline {chapter}{\numberline {4}Benchmarks and Results}{26}{chapter.4}%
+\contentsline {section}{\numberline {4.1}Evaluation Methodology}{26}{section.4.1}%
+\contentsline {section}{\numberline {4.2}Invocation Latency (Startup Time)}{26}{section.4.2}%
+\contentsline {section}{\numberline {4.3}Memory Footprint}{27}{section.4.3}%
+\contentsline {section}{\numberline {4.4}CPU Utilization}{28}{section.4.4}%
+\contentsline {chapter}{\numberline {5}Conclusion and Future Work}{33}{chapter.5}%
+\contentsline {section}{\numberline {5.1}Conclusion}{33}{section.5.1}%
+\contentsline {section}{\numberline {5.2}Future Work}{34}{section.5.2}%

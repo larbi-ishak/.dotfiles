@@ -1,0 +1,4 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{c+c1}{\PYGZsh{} Pause the container execution}
+nerdctl\PYG{+w}{ }pause\PYG{+w}{ }function\PYGZus{}vm\PYGZus{}1
+\end{Verbatim}

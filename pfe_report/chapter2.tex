@@ -1,0 +1,49 @@
+\chapter{State of the Art}
+
+\section{Evolution of Cloud Architectures}
+The journey to modern serverless computing is a story of increasing abstraction. In the early days of the internet, deploying an application required purchasing, configuring, and maintaining physical servers in a data center (bare-metal). This approach was highly capital-intensive, inflexible, and slow to scale.
+
+\subsection{Hardware Virtualization}
+The first major paradigm shift was hardware virtualization, popularized by hypervisors like VMware, Xen, and KVM. Virtual Machines (VMs) decoupled the operating system from the underlying physical hardware. Multiple VMs, each with its own full guest operating system, could run concurrently on a single physical machine. This drastically improved resource utilization and introduced the concept of Infrastructure-as-a-Service (IaaS), pioneered by Amazon Web Services (AWS) with EC2. While VMs provided excellent security isolation, they remained heavyweight. Booting a full OS takes time, and each VM consumes significant memory just to run the kernel, leaving less for the actual application.
+
+\subsection{Containerization}
+To address the overhead of VMs, the industry shifted towards operating-system-level virtualization, colloquially known as containers. Technologies like LXC and, most notably, Docker, allowed developers to package an application and its dependencies into a single, standardized unit. Unlike VMs, containers share the host machine's OS kernel. They achieve isolation through Linux kernel features like Namespaces (for isolating process trees, networking, user IDs) and cgroups (for resource limiting).
+Because they don't boot a guest OS, containers start almost instantaneously and have a minimal memory footprint. However, this shared-kernel architecture presents a security risk in multi-tenant environments. A vulnerability in the host kernel could theoretically be exploited by a malicious container to compromise the host or other containers.
+
+\subsection{Serverless and FaaS}
+Serverless computing, specifically Function-as-a-Service (FaaS) like AWS Lambda or Google Cloud Functions, abstracts infrastructure entirely \cite{jonas2019cloud}. Developers upload discrete functions, and the cloud provider handles provisioning, scaling, and execution. The provider only bills for the exact compute time consumed, often measured in milliseconds.
+To achieve the rapid scaling required by FaaS, providers initially relied heavily on containers. However, as serverless platforms became genuinely multi-tenant (running code from different customers on the same physical hardware), the security shortcomings of traditional containers became a primary concern.
+
+\section{The Security vs. Speed Dilemma}
+The evolution outlined above highlights a fundamental trade-off in cloud infrastructure:
+\begin{itemize}
+    \item \textbf{Virtual Machines:} High security (hardware-level isolation), low speed (slow boot times, high overhead).
+    \item \textbf{Containers:} Low security (shared kernel), high speed (instant startup, low overhead).
+\end{itemize}
+
+Serverless computing demands both: the security of a VM to safely execute untrusted multi-tenant code, and the speed of a container to rapidly scale and minimize cold starts.
+
+\section{MicroVMs: Bridging the Gap}
+To solve this dilemma, the industry developed the concept of the "MicroVM"---a lightweight virtual machine heavily optimized for minimal overhead and rapid startup times. MicroVMs strip away legacy device drivers and features unnecessary for modern cloud workloads, resulting in a hypervisor that is both secure and fast.
+
+\subsection{AWS Firecracker}
+Firecracker is an open-source virtual machine monitor (VMM) developed by Amazon Web Services specifically for serverless workloads (AWS Lambda and AWS Fargate) \cite{agache2020firecracker}. It uses the Linux Kernel-based Virtual Machine (KVM) to provide hardware virtualization. Firecracker is written in Rust, focusing on security and a minimal footprint.
+Firecracker can boot a microVM in under 125 milliseconds and consumes less than 5 MiB of memory per instance. It achieves this by providing a minimal device model to the guest operating system (only essential devices like network, block storage, and a serial console are supported, primarily via virtio). While Firecracker sets the benchmark for serverless virtualization, integrating it into standard container ecosystems (like Kubernetes or containerd) requires specialized plugins (like firecracker-containerd).
+
+\subsection{Kata Containers}
+Kata Containers is an open-source project building a standard implementation of lightweight VMs that feel and perform like containers, but provide the workload isolation and security advantages of VMs \cite{kata2023}.
+Unlike Firecracker, which is a standalone VMM, Kata is designed to integrate seamlessly into the OCI (Open Container Initiative) ecosystem. When a user requests a container via Docker, containerd, or Kubernetes, Kata intercepts the request. Instead of creating a standard Linux container sharing the host kernel, Kata boots a lightweight VM (using a hypervisor like QEMU or Cloud Hypervisor) and runs the container workload inside that dedicated VM.
+Kata provides exceptional compatibility with existing container workflows. By defaulting to QEMU, it leverages a highly mature and widely supported hypervisor, though historically, QEMU's flexibility came at the cost of slower startup times compared to purpose-built VMMs like Firecracker.
+
+\section{Addressing Cold Starts in MicroVMs}
+While MicroVMs like Firecracker and Kata-QEMU drastically reduce boot times compared to legacy VMs, the initialization overhead still exists. In a strict serverless environment, this initialization creates a "cold start."
+
+Current mitigation strategies include:
+\begin{itemize}
+    \item \textbf{Keep-Alive / Provisioned Concurrency:} Keeping a certain number of instances constantly running. This defeats the pay-as-you-go financial model of serverless, as users pay for idle time.
+    \item \textbf{Snapshotting (e.g., Firecracker Snapshots):} Saving the memory state of a booted VM to disk and restoring it. While faster than a full boot, reading memory from disk still incurs I/O latency.
+    \item \textbf{The Warm-up Strategy:} The approach explored in this thesis. By pre-provisioning microVMs, fully booting them, and then pausing their CPU execution via the hypervisor, the instances consume minimal active resources. Upon invocation, unpausing the instance is an instantaneous CPU instruction, effectively reducing the cold start latency to zero.
+\end{itemize}
+
+\vspace{2cm}
+\lipsum[21-40] % Dummy text for length

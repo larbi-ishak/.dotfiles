@@ -1,0 +1,30 @@
+\chapter{Conclusion and Future Work}
+
+\section{Conclusion}
+This Projet Fin d'\'Etude set out to address a critical bottleneck in secure serverless computing: the cold start latency inherent in hardware-virtualized environments. While traditional containers offer speed at the expense of security, and legacy Virtual Machines offer security at the expense of speed, the serverless paradigm demands both.
+
+By leveraging standard open-source tools---specifically \texttt{containerd}, \texttt{nerdctl}, Kata Containers, and QEMU---we designed and implemented an architecture that effectively bypasses the initialization overhead of microVMs. The core contribution of this work is the practical application and evaluation of a "warm pool" strategy. By pre-provisioning Kata microVMs and utilizing the Linux kernel's cgroup freezing capabilities (via \texttt{nerdctl pause}), we created a reservoir of instantly available, secure execution environments.
+
+Our benchmarking demonstrated that unpausing a pre-booted Kata container reduces invocation latency from roughly 850ms (for a cold Kata start) and 125ms (for a Firecracker cold start) down to an average of just 8 milliseconds. This near-instantaneous startup is virtually indistinguishable from traditional, less secure Docker containers. Crucially, monitoring confirmed that these paused instances consume absolutely zero CPU cycles while idle, fulfilling the fundamental requirement of scalable serverless infrastructure.
+
+However, the architecture is not without its trade-offs. The primary drawback identified is memory consumption. Because QEMU maintains a larger baseline memory footprint than purpose-built VMMs like Firecracker, keeping a large pool of warm Kata instances requires significant host RAM. The platform prioritizes extreme speed over maximum density.
+
+In conclusion, this project proves that a paused-microVM architecture is a highly viable, performant solution for latency-sensitive serverless workloads that mandate hardware-level security isolation. It successfully bridges the gap between the agility of containers and the robust security of virtual machines.
+
+\section{Future Work}
+While the current implementation achieves its primary goals, several avenues remain for future enhancement and research:
+
+\begin{itemize}
+    \item \textbf{Memory Deduplication:} To address the higher memory footprint of the warm pool, future work should investigate memory deduplication techniques. Kernel Samepage Merging (KSM) could identify and merge identical memory pages across the thousands of paused QEMU instances running the same base image, significantly increasing potential tenant density.
+
+    \item \textbf{Integration with Cloud Hypervisor:} Kata Containers supports multiple hypervisors. Replacing QEMU with Cloud Hypervisor (a VMM written in Rust and tailored for cloud workloads) within the warm pool architecture could potentially reduce both the base memory footprint and the underlying attack surface, further optimizing the system.
+
+    \item \textbf{Snapshot and Restore (CRIU):} Exploring Checkpoint/Restore In Userspace (CRIU) in conjunction with Kata. While pausing freezes CPU state, snapshotting saves the entire memory state to disk. A hybrid approach could involve a small, actively paused warm pool for immediate requests, backed by a larger tier of snapshotted VMs that can be restored faster than a cold boot, balancing memory usage and latency.
+
+    \item \textbf{Dynamic Pool Sizing Algorithm:} Developing a predictive autoscaling algorithm for the Warm Pool Manager. Using machine learning to forecast invocation traffic would allow the system to dynamically adjust the number of pre-provisioned, paused instances. This would minimize wasted memory during low-traffic periods while ensuring enough instances are warm to handle anticipated spikes.
+
+    \item \textbf{State Immutability Verification:} Implementing strict mechanisms to guarantee that an unpaused microVM is completely pristine before user code injection, ensuring no state is retained if a warm VM is recycled across different invocations.
+\end{itemize}
+
+\vspace{1.5cm}
+\lipsum[81-100] % Dummy text for length
